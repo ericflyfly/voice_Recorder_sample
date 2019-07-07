@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <h2>listen</h2>
+    <ul id="listenResult">
+    </ul>
+    <title>Speech Recording</title>
+    <button onclick="listenUser()" >Listen</button>
+</head>
+<body>
+  <script>
+    window.SpeechRecognition = window.webkitSpeechRecognition || window.SpeechRecognition;
+    let finalTranscript = '';
+    let recognition = new window.SpeechRecognition();
+    recognition.interimResults = true;
+    recognition.maxAlternatives = 10;
+    recognition.lang = 'en-US';
+    //recognition.continuous = true;
+    recognition.onresult = (event) => {
+      document.querySelector('h2').innerHTML = + '<i style="color:#ddd;">' + 'listen' + '</>';
+      let interimTranscript = '';
+      //console.log(event);
+      for (let i = event.resultIndex, len = event.results.length; i < len; i++) {
+        console.log(event.results[i][0]);
+        let transcript = event.results[i][0].transcript;
+        if (event.results[i].isFinal) {
+          finalTranscript = transcript;
+          var node = document.createElement("LI");
+          var textnode = document.createTextNode(finalTranscript + ' ');
+          node.appendChild(textnode);
+          document.getElementById("listenResult").appendChild(node);
+        } else {
+          interimTranscript += transcript;
+        }
+      }
+      //console.log(finalTranscript + ' ');
+
+      //document.getElementById("listenResult").innerHTML = finalTranscript + ' ';
+      document.querySelector('h2').innerHTML = '<i style="color:#ddd;">' + interimTranscript + '</>';
+    }
+
+    function listenUser(){
+      recognition.start();
+    }
+  </script>
+</body>
+</html>
